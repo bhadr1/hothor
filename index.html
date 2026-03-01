@@ -4,227 +4,539 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل الحضور - جامعيون</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --dark-blue: #003463;    
-            --light-blue: #0090de;    
-            --orange: #fdac13;        
-            --bg-light: #f4f7f9;
+            --navy: #0a1628;
+            --deep-blue: #0d2244;
+            --gold: #c9a84c;
+            --gold-light: #e8c97a;
+            --gold-glow: #f5e0a0;
+            --teal: #1a6b6b;
+            --teal-light: #22a39a;
+            --cream: #fdf6e3;
+            --moon-white: #fff8e7;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, var(--bg-light) 0%, #e8edf1 100%); 
-            color: #333;
-            margin: 0;
-            padding: 50px 20px;
-            direction: rtl; 
-            text-align: right;
+            font-family: 'Cairo', sans-serif;
+            background: var(--navy);
+            color: var(--cream);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+            text-align: right;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        .container {
-            max-width: 400px;
-            width: 100%;
-            background-color: #ffffff;
-            padding: 30px 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
-            text-align: center; 
+        /* ---- خلفية النجوم ---- */
+        .stars-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: 
+                radial-gradient(ellipse at 20% 10%, rgba(26, 107, 107, 0.18) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(201, 168, 76, 0.08) 0%, transparent 50%);
         }
 
-        /* ----- ستايلات الفورم الأصلية (مختصرة لعدم التكرار) ----- */
-        .header-section { margin-bottom: 25px; }
-        .logo { margin-bottom: 10px; }
-        .logo img { max-width: 180px; height: auto; }
-        .brand-name { color: var(--dark-blue); font-size: 28px; font-weight: 800; margin-bottom: 5px; }
-        .brand-description { color: #666; font-size: 14px; margin-bottom: 15px; }
-        hr { border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0, 0, 0, 0), var(--light-blue), rgba(0, 0, 0, 0)); margin: 20px 0; }
-        .form-title { color: var(--dark-blue); margin-bottom: 15px; font-size: 24px; font-weight: 700; }
-        .instruction-text { color: var(--orange); font-size: 16px; margin-bottom: 25px; font-weight: 600; }
-        .form-group { margin-bottom: 25px; }
-        input[type="text"] { width: 100%; padding: 14px 15px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 17px; background-color: #fcfcfc; transition: border-color 0.3s, box-shadow 0.3s; }
-        input[type="text"]:focus { border-color: var(--light-blue); outline: none; box-shadow: 0 0 10px rgba(0, 144, 222, 0.3); background-color: #fff; }
-        
-        .submit-button { 
-            display: flex; /* لترتيب العناصر داخله */
+        .star {
+            position: absolute;
+            background: var(--gold-glow);
+            border-radius: 50%;
+            animation: twinkle var(--d, 3s) infinite alternate ease-in-out;
+            opacity: var(--o, 0.6);
+        }
+
+        @keyframes twinkle {
+            0% { opacity: var(--o, 0.4); transform: scale(1); }
+            100% { opacity: 0.1; transform: scale(0.5); }
+        }
+
+        /* ---- هلال زخرفي ---- */
+        .crescent-decor {
+            position: fixed;
+            top: -60px;
+            left: -40px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            border: 3px solid rgba(201, 168, 76, 0.15);
+            box-shadow: inset -60px -20px 0 0 rgba(201, 168, 76, 0.08);
+            transform: rotate(-30deg);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .crescent-decor-2 {
+            position: fixed;
+            bottom: -80px;
+            right: -50px;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            border: 2px solid rgba(201, 168, 76, 0.08);
+            box-shadow: inset 70px 30px 0 0 rgba(26, 107, 107, 0.07);
+            transform: rotate(150deg);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ---- الزخارف الإسلامية ---- */
+        .ornament-line {
+            display: flex;
             align-items: center;
             justify-content: center;
+            gap: 10px;
+            margin: 12px 0;
+            color: var(--gold);
+            font-size: 18px;
+            opacity: 0.7;
+        }
+
+        .ornament-line::before,
+        .ornament-line::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to var(--dir, right), transparent, var(--gold));
+            opacity: 0.4;
+        }
+        .ornament-line::before { --dir: right; }
+        .ornament-line::after { --dir: left; }
+
+        /* ---- البطاقة الرئيسية ---- */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 430px;
+            width: 100%;
+            background: linear-gradient(160deg, #0f2040 0%, #091830 60%, #0a1628 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(201, 168, 76, 0.25);
+            box-shadow: 
+                0 0 60px rgba(201, 168, 76, 0.08),
+                0 30px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(201, 168, 76, 0.1);
+            overflow: hidden;
+            animation: cardFadeIn 0.8s ease-out;
+        }
+
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---- شريط الهيدر الذهبي ---- */
+        .ramadan-header {
+            background: linear-gradient(135deg, #1a3a1a 0%, #0d2a2a 50%, #1a2a0a 100%);
+            padding: 18px 30px 14px;
+            text-align: center;
+            border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ramadan-header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), var(--teal-light), var(--gold), transparent);
+        }
+
+        .ramadan-greeting {
+            font-family: 'Amiri', serif;
+            font-size: 22px;
+            color: var(--gold-light);
+            letter-spacing: 1px;
+            text-shadow: 0 0 20px rgba(201, 168, 76, 0.4);
+            margin-bottom: 4px;
+        }
+
+        .ramadan-sub {
+            font-size: 12px;
+            color: var(--teal-light);
+            opacity: 0.85;
+        }
+
+        /* ---- محتوى البطاقة ---- */
+        .card-body {
+            padding: 30px 35px 35px;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .logo-section img {
+            max-width: 150px;
+            height: auto;
+            filter: brightness(0) invert(1);
+            opacity: 0.9;
+        }
+
+        .brand-name {
+            font-size: 30px;
+            font-weight: 900;
+            color: var(--gold-light);
+            text-shadow: 0 0 30px rgba(201, 168, 76, 0.3);
+            margin-bottom: 3px;
+        }
+
+        .brand-description {
+            font-size: 13px;
+            color: rgba(253, 246, 227, 0.55);
+            margin-bottom: 0;
+        }
+
+        .brand-description b {
+            color: var(--teal-light);
+        }
+
+        /* ---- الفاصل ---- */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(201, 168, 76, 0.3), transparent);
+        }
+
+        .divider-icon {
+            font-size: 16px;
+            color: var(--gold);
+            opacity: 0.6;
+        }
+
+        /* ---- عنوان الفورم ---- */
+        .form-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--moon-white);
+            margin-bottom: 6px;
+        }
+
+        .instruction-text {
+            text-align: center;
+            font-size: 14px;
+            color: var(--gold-light);
+            margin-bottom: 22px;
+            opacity: 0.85;
+        }
+
+        .instruction-text b { color: var(--teal-light); }
+
+        /* ---- حقل الإدخال ---- */
+        .form-group { margin-bottom: 20px; position: relative; }
+
+        .input-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--gold);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px 44px 15px 15px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(201, 168, 76, 0.2);
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Cairo', sans-serif;
+            color: var(--cream);
+            transition: all 0.3s;
+            direction: rtl;
+        }
+
+        input[type="text"]::placeholder { color: rgba(253, 246, 227, 0.35); }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(201, 168, 76, 0.06);
+            box-shadow: 0 0 20px rgba(201, 168, 76, 0.15);
+        }
+
+        /* ---- زر الإرسال ---- */
+        .submit-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             width: 100%;
             padding: 16px;
-            background-color: var(--light-blue); 
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 19px;
+            background: linear-gradient(135deg, var(--teal) 0%, #155555 50%, var(--teal) 100%);
+            background-size: 200% 100%;
+            color: var(--gold-light);
+            border: 1px solid rgba(201, 168, 76, 0.3);
+            border-radius: 12px;
+            font-size: 18px;
             font-weight: 700;
+            font-family: 'Cairo', sans-serif;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 144, 222, 0.4);
-            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+            transition: all 0.4s;
+            box-shadow: 0 5px 20px rgba(26, 107, 107, 0.4);
+            position: relative;
+            overflow: hidden;
         }
 
-        .submit-button:hover { 
-            background-color: var(--dark-blue); 
-            transform: translateY(-2px); 
-            box-shadow: 0 8px 20px rgba(0, 144, 222, 0.6);
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.1), transparent);
+            transition: left 0.5s;
         }
 
-        /* ------------------------------------- */
-        /* ----- ستايلات أيقونة التحميل (SPINNER) ----- */
-        /* ------------------------------------- */
+        .submit-button:hover::before { left: 100%; }
+
+        .submit-button:hover {
+            background-position: right center;
+            border-color: var(--gold);
+            box-shadow: 0 8px 30px rgba(201, 168, 76, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-icon { font-size: 20px; }
+
+        /* ---- سبينر ---- */
         .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #fff;
+            border: 3px solid rgba(201, 168, 76, 0.2);
+            border-top: 3px solid var(--gold-light);
             border-radius: 50%;
             width: 18px;
             height: 18px;
             animation: spin 0.8s linear infinite;
-            margin-left: 10px; /* المسافة بين النص والأيقونة */
-            display: none; /* مخفي افتراضياً */
+            display: none;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
-        /* ------------------------------------- */
-        /* ----- ستايلات شاشة النجاح الجديدة (كما هي) ----- */
-        /* ------------------------------------- */
-        
+
+        /* ---- الفوتر ---- */
+        .footer-note {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: rgba(253, 246, 227, 0.3);
+        }
+
+        /* ---- مودال النجاح ---- */
         #successModal {
-            display: none; 
+            display: none;
             position: fixed;
-            z-index: 1000; 
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.7); 
+            z-index: 1000;
+            inset: 0;
+            background: rgba(5, 10, 25, 0.85);
+            backdrop-filter: blur(6px);
             justify-content: center;
             align-items: center;
             direction: rtl;
         }
 
         .modal-content {
-            background-color: #fefefe;
-            padding: 40px;
-            border-radius: 15px;
+            background: linear-gradient(160deg, #0f2040, #091830);
+            border: 1px solid rgba(201, 168, 76, 0.3);
+            border-radius: 20px;
+            padding: 40px 35px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-            max-width: 300px;
+            box-shadow: 0 0 60px rgba(201, 168, 76, 0.15), 0 30px 60px rgba(0,0,0,0.5);
+            max-width: 320px;
             width: 90%;
-            animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            animation: modalIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        @keyframes modalIn {
+            0% { transform: scale(0.7) translateY(-40px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
         }
 
         .success-icon {
-            color: #4CAF50; 
-            font-size: 70px;
-            line-height: 1;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 20px;
-            animation: pulse 1s infinite alternate;
+            font-size: 60px;
+            margin-bottom: 15px;
+            animation: bounceIn 0.6s ease;
+            display: block;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            60% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
 
         .success-message {
-            color: var(--dark-blue);
-            font-size: 24px;
+            font-family: 'Amiri', serif;
+            color: var(--gold-light);
+            font-size: 22px;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .success-subtext {
-            color: #666;
-            font-size: 15px;
-            margin-bottom: 30px;
+            color: rgba(253, 246, 227, 0.6);
+            font-size: 13px;
+            margin-bottom: 25px;
+            line-height: 1.7;
         }
 
         .close-button {
-            background-color: var(--light-blue);
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 8px;
+            background: linear-gradient(135deg, var(--teal), #155555);
+            color: var(--gold-light);
+            border: 1px solid rgba(201, 168, 76, 0.3);
+            padding: 11px 30px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: background-color 0.3s;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s;
         }
-        
+
         .close-button:hover {
-            background-color: var(--dark-blue);
+            border-color: var(--gold);
+            box-shadow: 0 5px 20px rgba(201, 168, 76, 0.2);
         }
 
-        @keyframes slideIn {
-            0% { transform: translateY(-100px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
+        /* ---- زخرفة رمضانية في الموال ---- */
+        .modal-ornament {
+            font-size: 22px;
+            color: var(--gold);
+            opacity: 0.4;
+            margin-bottom: 10px;
+            letter-spacing: 8px;
         }
     </style>
 </head>
 <body>
 
+    <!-- خلفية النجوم -->
+    <div class="stars-bg" id="starsBg"></div>
+    <div class="crescent-decor"></div>
+    <div class="crescent-decor-2"></div>
+
     <div class="container">
-        <div class="header-section">
-            <div class="logo">
-                <img src="logo-jamii.png" alt="شعار جامعيون ">
-            </div>
-            <p class="brand-name">جامعيون</p>
-            <p class="brand-description">جامعيون <b>تطبيق</b> ومبادرة طلابية <b>لطلاب الجامعة</b></p>
+        <!-- هيدر رمضاني -->
+        <div class="ramadan-header">
+            <div class="ramadan-greeting">رمضان كريم 🌙</div>
+            <div class="ramadan-sub">كل عام وأنتم بخير — بارك الله في أوقاتكم</div>
         </div>
-        
-        <hr> <h1 class="form-title">تسجيل الحضور</h1>
-        
-        <form id="attendanceForm" class="simple-form">
-            <p class="instruction-text">الرجاء إدخال <b>الاسم بالضبط</b> حسب منصة نحن</p>
-            
-            <div class="form-group">
-                <input type="text" id="employeeName" name="employeeName" placeholder="اكتب اسمك هنا" required>
+
+        <div class="card-body">
+            <!-- اللوقو -->
+            <div class="logo-section">
+                <img src="logo-jamii.png" alt="شعار جامعيون">
             </div>
-            
-            <button type="submit" class="submit-button" id="submitButton">
-                <span id="buttonText">تسجيل الحضور الآن</span>
-                <div class="spinner" id="loadingSpinner"></div>
-            </button>
-        </form>
+
+            <p class="brand-name" style="text-align:center;">جامعيون</p>
+            <p class="brand-description" style="text-align:center;">جامعيون <b>تطبيق</b> ومبادرة طلابية <b>لطلاب الجامعة</b></p>
+
+            <!-- فاصل زخرفي -->
+            <div class="ornament-line">✦</div>
+
+            <h1 class="form-title">تسجيل الحضور</h1>
+            <p class="instruction-text">الرجاء إدخال <b>الاسم بالضبط</b> حسب منصة نحن</p>
+
+            <form id="attendanceForm">
+                <div class="form-group">
+                    <span class="input-icon">☪</span>
+                    <input type="text" id="employeeName" name="employeeName" placeholder="اكتب اسمك هنا..." required>
+                </div>
+
+                <button type="submit" class="submit-button" id="submitButton">
+                    <span class="btn-icon" id="btnIcon">🌙</span>
+                    <span id="buttonText">تسجيل الحضور الآن</span>
+                    <div class="spinner" id="loadingSpinner"></div>
+                </button>
+            </form>
+
+            <div class="footer-note">✦ جامعيون — مبادرة طلابية ✦</div>
+        </div>
     </div>
 
+    <!-- مودال النجاح -->
     <div id="successModal">
         <div class="modal-content">
-            <div class="success-icon">✓</div>
+            <div class="modal-ornament">✦ ✦ ✦</div>
+            <span class="success-icon">🌙</span>
             <div class="success-message" id="modalMessage">تم تسجيل الحضور بنجاح!</div>
-            <div class="success-subtext"> لاتنسى تحميل تطبيق جامعيون ومتابعة حسابات جامعيون.</div>
-            <button class="close-button" onclick="closeModal()">حسناً</button>
+            <div class="success-subtext">لا تنسى تحميل تطبيق جامعيون ومتابعة حساباتنا.<br>رمضان كريم! 🌟</div>
+            <button class="close-button" onclick="closeModal()">حسناً، بارك الله فيك</button>
         </div>
     </div>
 
     <script>
+        // توليد النجوم
+        (function() {
+            const bg = document.getElementById('starsBg');
+            for (let i = 0; i < 80; i++) {
+                const s = document.createElement('div');
+                s.className = 'star';
+                const size = Math.random() * 2.5 + 0.5;
+                s.style.cssText = `
+                    width:${size}px; height:${size}px;
+                    top:${Math.random()*100}%;
+                    left:${Math.random()*100}%;
+                    --d:${2 + Math.random()*4}s;
+                    --o:${0.3 + Math.random()*0.6};
+                    animation-delay:${Math.random()*4}s;
+                `;
+                bg.appendChild(s);
+            }
+        })();
+
         const form = document.getElementById('attendanceForm');
         const modal = document.getElementById('successModal');
         const submitButton = document.getElementById('submitButton');
-        const buttonText = document.getElementById('buttonText'); // العنصر الجديد
-        const loadingSpinner = document.getElementById('loadingSpinner'); // العنصر الجديد
+        const buttonText = document.getElementById('buttonText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const btnIcon = document.getElementById('btnIcon');
         const inputField = document.getElementById('employeeName');
         const modalMessage = document.getElementById('modalMessage');
 
-        
-        function closeModal() {
-            modal.style.display = 'none';
-        }
+        function closeModal() { modal.style.display = 'none'; }
 
         document.addEventListener('DOMContentLoaded', () => {
             form.addEventListener('submit', async function(e) {
-                e.preventDefault(); 
+                e.preventDefault();
                 const name = inputField.value.trim();
 
                 if (name === "") {
@@ -232,9 +544,9 @@
                     return;
                 }
 
-                
                 buttonText.textContent = 'جاري التسجيل...';
-                loadingSpinner.style.display = 'block'; 
+                btnIcon.style.display = 'none';
+                loadingSpinner.style.display = 'block';
                 submitButton.disabled = true;
 
                 try {
@@ -243,30 +555,24 @@
                         body: new URLSearchParams({ employeeName: name })
                     });
 
-                    const result = await response.text(); 
-                    
-                    
+                    const result = await response.text();
                     modalMessage.textContent = result;
-                    modal.style.display = 'flex'; 
-                    form.reset(); 
+                    modal.style.display = 'flex';
+                    form.reset();
 
                 } catch (error) {
-                    
                     modalMessage.textContent = "حدث خطأ أثناء التسجيل. حاول مرة أخرى.";
                     modal.style.display = 'flex';
-                    
                 } finally {
-                    
                     buttonText.textContent = 'تسجيل الحضور الآن';
-                    loadingSpinner.style.display = 'none'; 
+                    loadingSpinner.style.display = 'none';
+                    btnIcon.style.display = 'inline';
                     submitButton.disabled = false;
                 }
             });
 
             modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    closeModal();
-                }
+                if (e.target === modal) closeModal();
             });
         });
     </script>
